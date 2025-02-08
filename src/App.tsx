@@ -1,33 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React, { useState } from "react";
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  // task va contenir la valeur actuelle de l'input
+  // setTask est la fonction qui met à jour cette valeur
+  // useState("") initialise tast avec une chaine vide
+  const [task, setTask] = useState("");
+
+  // Liste des taches
+  const [tasks, setTasks] = useState<string[]>([]); 
+
+  const addTask = () => {
+    //console.log("Tache ajoutée:", task);
+
+    //task.trim vérifie si task n'est pas vide
+    if (task.trim()) {
+      setTasks([...tasks, task]) // ajouter la tache à la liste des taches
+      setTask(""); // Réinitialiser l'input
+    }
+  }
+
+  const removeTask = (index:number) => {
+    // Créer un nouveau tableau avec toutes les taches sauf celles à l'index donné
+    // la fonction .filter crée un nouveau tableau qui exclus la tache à l'index donné
+    // _ est une convention pour dire que la premiere valeur du tableau (task) n'est pas utilisé, on s'interesse seulement à l'index i
+    setTasks(tasks.filter((_, i) => i !== index));
+  }
 
   return (
     <>
+      <h1>To-Do List</h1>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+
+      <input 
+      type="text" 
+      placeholder='Ecrire une tache'
+      // value={task} fais en sorte que l'input affiche toujours la valeur de task
+      value={task}
+      // met a jour task a chaque frappe dans l'input
+      onChange={(e) => setTask(e.target.value)}
+      />
+      <button onClick={addTask}>Ajouter la tache</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      {/* parcours toutes les tache sdans l'état tasks et crée un div pour chacune d'elle */}
+      <div>
+        {tasks.map((task, index) => (
+          <div key={index}>
+          {task}
+          <button onClick={()=> removeTask(index)}>Supprimer la tache</button>
+          </div>
+
+        ))}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
     </>
   )
 }
